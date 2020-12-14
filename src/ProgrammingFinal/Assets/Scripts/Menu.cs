@@ -94,13 +94,12 @@ public class Menu : MonoBehaviour
             {
                 button.SetActive(false);
             }
+            wallManager.StartSpawn();
         }
         else if(gameState==GameState.pause)
         {
 
         }
-        wallManager.gameObject.SetActive(true);
-        wallManager.StartSpawn();
         gameState = GameState.play;
         Time.timeScale = 1;
     }
