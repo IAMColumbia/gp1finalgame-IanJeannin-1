@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 635b8ce4ae5037b4496930b98af13e7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDurability: 5
-  regeneratePeriod: 2
-  regenerateRate: 0.25
-  breakPeriod: 1
+  maxDurability: 3
+  regeneratePeriod: 1
+  regenerateRate: 0.2
+  breakPeriod: 0.5

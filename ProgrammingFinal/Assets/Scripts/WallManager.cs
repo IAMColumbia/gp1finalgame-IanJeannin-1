@@ -7,23 +7,29 @@ public class WallManager : MonoBehaviour
     public List<GameObject> xPrefabs;
     public List<GameObject> yPrefabs;
 
+    [Tooltip("The cooldown between wall spawns.")]
     [SerializeField]
-    private float wallSpawnTimer=1;
+    private float wallSpawnTimer=4;
     [Tooltip("How much faster the wall speed gets every time the player scores.")]
     [SerializeField]
     private float speedMultiplier=0.1f;
     [Tooltip("How quickly the cooldown between wall spawns will decrease every time the player scores.")]
     [SerializeField]
     private float cooldownMultiplier = 0.1f;
+    [SerializeField]
+    private float StartWallSpeed=1;
 
     private static List<Wall> walls=new List<Wall>();
     private static int lastRandom=10; //Nonsense number so that the first time it's checked isn't null
     private float speedCounter=0;
     private float newSpeed;
+    private float startWallSpawnTimer;
 
     // Start is called before the first frame update
     void Start()
     {
+        startWallSpawnTimer = wallSpawnTimer;
+        Wall.Speed = StartWallSpeed;
         SpawnWall();
         StartCoroutine("WallSpawnTimer");
     }
@@ -80,9 +86,21 @@ public class WallManager : MonoBehaviour
         if(speedCounter!=ScoreManager.Score)
         {
             speedCounter = ScoreManager.Score;
-            Wall.Speed += speedMultiplier;
-            Player.Speed += speedMultiplier;
-            wallSpawnTimer -= cooldownMultiplier;
+            if(ScoreManager.Score<15)
+            {
+                Wall.Speed += speedMultiplier;
+                wallSpawnTimer -= cooldownMultiplier;
+            }
+            else if(ScoreManager.Score<30)
+            {
+                Wall.Speed += speedMultiplier/2;
+                wallSpawnTimer -= cooldownMultiplier / 2;
+            }
+            else if(ScoreManager.Score<50)
+            {
+                Wall.Speed += speedMultiplier / 4;
+                wallSpawnTimer -= cooldownMultiplier / 4;
+            }
         }
     }
 
@@ -104,8 +122,11 @@ public class WallManager : MonoBehaviour
         {
             Destroy(walls[x].gameObject);
         }
-        Wall.Speed = 1;
+        StopAllCoroutines();
+        Wall.Speed = StartWallSpeed;
+        wallSpawnTimer = startWallSpawnTimer;
         walls.Clear();
         SpawnWall();
+        StartCoroutine(WallSpawnTimer());
     }
 }

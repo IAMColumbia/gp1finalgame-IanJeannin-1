@@ -5,12 +5,15 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public Vector2 Direction;
-    public static float Speed=3;
+    public float startingSpeed=3;
     public WallManager wallManager;
     public Arena arena;
     [SerializeField]
     private float maxSpeed=8;
+    [SerializeField]
+    private float speedMultiplier=0.1f;
 
+    private float speed;
     private Vector3 moveTranslation;
     private Rigidbody2D rb2D;
     SpriteRenderer spriteRenderer;
@@ -23,6 +26,7 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
+        speed = startingSpeed;
         rb2D = GetComponent<Rigidbody2D>();
         playerController = GetComponent<PlayerController>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -41,9 +45,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Speed>maxSpeed)
+        if (speed>maxSpeed)
         {
-            Speed = maxSpeed;
+            speed = maxSpeed;
         }
         CheckInArena();
         if(isInArena)
@@ -68,7 +72,7 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb2D.MovePosition(rb2D.position + Direction * Speed * Time.fixedDeltaTime);
+        rb2D.MovePosition(rb2D.position + Direction * speed * Time.fixedDeltaTime);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -80,6 +84,7 @@ public class Player : MonoBehaviour
         }
         else if(other.tag=="ScoreTrigger")
         {
+            speed += speedMultiplier;
             ScoreManager.Score++;
             Debug.Log("Score: " + ScoreManager.Score);
             Destroy(other);
@@ -133,7 +138,7 @@ public class Player : MonoBehaviour
     public void Reset()
     {
         transform.position = new Vector2(0, 0);
-        Speed = 3;
+        speed = startingSpeed;
         ScoreManager.Score = 0;
         wallManager.ResetWalls();
         arena.GetComponent<Arena>().ResetArena();

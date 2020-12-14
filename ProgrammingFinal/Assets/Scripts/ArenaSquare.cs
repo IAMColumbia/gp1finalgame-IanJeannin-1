@@ -9,7 +9,7 @@ public class ArenaSquare : MonoBehaviour
     private float maxDurability=5;
     [Tooltip("How long the player must stay off the square for it to start regenerating")]
     [SerializeField]
-    private float regeneratePeriod=2;
+    private float regeneratePeriod=0.1f;
     [Tooltip("How much the object regenerates per second.")]
     [SerializeField]
     private float regenerateRate=0.25f;
@@ -73,6 +73,7 @@ public class ArenaSquare : MonoBehaviour
         if (collision.gameObject.GetComponent<Player>() != null&&squareState!=SquareState.breaking)
         {
             squareState = SquareState.offSquare;
+            StopAllCoroutines();
             StartCoroutine("BeginRegen");
         }
     }
@@ -94,7 +95,8 @@ public class ArenaSquare : MonoBehaviour
                 spriteRenderer.color = Color.Lerp(startingColor, middleColor, middleLerp);
                 if (middleLerp < 1)
                 {
-                    middleLerp -= Time.deltaTime / (maxDurability / 2);
+                    //middleLerp -= (Time.deltaTime * regenerateRate) / (maxDurability / 2)*regenerateRate;
+                    middleLerp = ((maxDurability - durability) / maxDurability) * 2;
                 }
             }
             else
@@ -102,7 +104,8 @@ public class ArenaSquare : MonoBehaviour
                 spriteRenderer.color = Color.Lerp(middleColor, endColor, endLerp);
                 if (endLerp < 1)
                 {
-                    endLerp -= Time.deltaTime / (maxDurability / 2);
+                    //endLerp -= (Time.deltaTime * regenerateRate) / (maxDurability / 2)*regenerateRate;
+                    endLerp = ((maxDurability / 2 - durability) / (maxDurability / 2));
                 }
             }
         }
@@ -115,7 +118,11 @@ public class ArenaSquare : MonoBehaviour
             spriteRenderer.color = Color.Lerp(startingColor, middleColor, middleLerp);
             if (middleLerp < 1)
             {
-                middleLerp += Time.deltaTime / (maxDurability/2);
+                Debug.Log("Durability: " + durability);
+                Debug.Log("Max Durability: " + maxDurability);
+                Debug.Log("Middle Lerp: " + middleLerp);
+                //middleLerp += Time.deltaTime / (maxDurability/2);
+                middleLerp = ((maxDurability - durability) / maxDurability) * 2;
             }
         }
         else if(durability<=0)
@@ -124,10 +131,15 @@ public class ArenaSquare : MonoBehaviour
         }
         else
         {
+            Debug.Log("Durability: " + durability);
+            Debug.Log("Max Durability: " + maxDurability);
+            Debug.Log("Middle Lerp: " + middleLerp);
+            Debug.Log("End Lerp: " + endLerp);
             spriteRenderer.color = Color.Lerp(middleColor, endColor, endLerp);
             if (endLerp < 1)
             {
-                endLerp += Time.deltaTime / (maxDurability/2);
+                //endLerp += Time.deltaTime / (maxDurability/2);
+                endLerp = ((maxDurability/2 - durability) / (maxDurability/2));
             }
         }
     }
