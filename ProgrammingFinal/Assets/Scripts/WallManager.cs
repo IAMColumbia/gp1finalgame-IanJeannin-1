@@ -28,10 +28,7 @@ public class WallManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        startWallSpawnTimer = wallSpawnTimer;
-        Wall.Speed = StartWallSpeed;
-        SpawnWall();
-        StartCoroutine("WallSpawnTimer");
+        //StartSpawn();
     }
 
     private void SpawnWall()
@@ -118,15 +115,59 @@ public class WallManager : MonoBehaviour
 
     public void ResetWalls()
     {
-        for(int x=walls.Count-1;x>=0;x--)
+        for (int x = walls.Count - 1; x >= 0; x--)
         {
             Destroy(walls[x].gameObject);
         }
+        walls.Clear();
         StopAllCoroutines();
+    }
+
+    public void StartSpawn()
+    {
         Wall.Speed = StartWallSpeed;
         wallSpawnTimer = startWallSpawnTimer;
-        walls.Clear();
         SpawnWall();
         StartCoroutine(WallSpawnTimer());
+    }
+
+    public void ChangeDifficulty()
+    {
+        switch (Menu.difficulty)
+        {
+            case Menu.Difficulty.easy:
+                SetEasy();
+                break;
+            case Menu.Difficulty.medium:
+                SetMedium();
+                break;
+            case Menu.Difficulty.hard:
+                SetHard();
+                break;
+        }
+    }
+
+    public void SetEasy()
+    {
+        StartWallSpeed = 1;
+        startWallSpawnTimer = 4.5f;
+        speedMultiplier = 0.08f;
+        cooldownMultiplier = 0.08f;
+    }
+
+    public void SetMedium()
+    {
+        StartWallSpeed = 1;
+        startWallSpawnTimer = 4;
+        speedMultiplier = 0.1f;
+        cooldownMultiplier = 0.1f;
+    }
+
+    public void SetHard()
+    {
+        StartWallSpeed = 2;
+        startWallSpawnTimer = 4;
+        speedMultiplier = 0.15f;
+        cooldownMultiplier = 0.15f;
     }
 }

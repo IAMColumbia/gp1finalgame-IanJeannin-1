@@ -10,7 +10,7 @@ public class Arena : MonoBehaviour
     SpriteRenderer spriteRenderer;
     Vector2 bottomLeft;
     Vector2 topRight;
-    private static GameObject[,] arenaSquares=new GameObject[4,4];
+    private GameObject[,] arenaSquares=new GameObject[4,4];
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +19,7 @@ public class Arena : MonoBehaviour
         bottomLeft = transform.position - spriteRenderer.bounds.size/2;
         topRight = transform.position + spriteRenderer.bounds.size/2;
         CreateArena();
+        ChangeDifficulty();
     }
 
     private void CreateArena()
@@ -38,18 +39,23 @@ public class Arena : MonoBehaviour
             }
         }
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void ResetArena()
     {
         foreach(GameObject x in arenaSquares)
         {
-            Destroy(x);
+            x.GetComponent<ArenaSquare>().ResetDurability();
         }
-        CreateArena();
+    }
+
+    public void ChangeDifficulty()
+    {
+        foreach(GameObject square in arenaSquares)
+        {
+            if(square.GetComponent<ArenaSquare>()!=null)
+            {
+                square.GetComponent<ArenaSquare>().ChangeDifficulty();
+            }
+        }
     }
 }

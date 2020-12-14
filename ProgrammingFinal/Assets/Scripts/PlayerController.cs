@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField]
+    private Menu menu;
     public Vector2 direction = new Vector2();
     public Vector2 keyDirection;
     public bool IsKeyDown
@@ -58,9 +60,12 @@ public class PlayerController : MonoBehaviour
         direction += keyDirection;
         direction.Normalize();
 
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if(Input.GetButtonDown("Pause"))
         {
-            Application.Quit();
+            if(Menu.gameState==Menu.GameState.play)
+            {
+                menu.PauseGame();
+            }
         }
     }
 

@@ -8,6 +8,9 @@ public class ScoreManager : MonoBehaviour
     public static int Score;
     [SerializeField]
     private Text scoreCounter;
+    [SerializeField]
+    private Text highScoreCounter;
+    private int HighScore;
 
     void Awake()
     {
@@ -21,6 +24,11 @@ public class ScoreManager : MonoBehaviour
 
     private void Update()
     {
+        if(HighScore<Score)
+        {
+            HighScore = Score;
+            highScoreCounter.text = HighScore.ToString();
+        }
         scoreCounter.text = Score.ToString();
     }
 }

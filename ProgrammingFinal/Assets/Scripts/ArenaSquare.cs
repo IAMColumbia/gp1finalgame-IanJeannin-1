@@ -18,8 +18,8 @@ public class ArenaSquare : MonoBehaviour
     private float breakPeriod=1;
 
     float durability;
-    enum SquareState { onSquare, offSquare, regenerating, breaking };
-    SquareState squareState=SquareState.offSquare;
+    public enum SquareState { onSquare, offSquare, regenerating, breaking, broken };
+    private SquareState squareState=SquareState.offSquare;
     private SpriteRenderer spriteRenderer;
     Color32 startingColor;
     Color32 middleColor = new Color32(255, 255, 0, 255);
@@ -59,18 +59,27 @@ public class ArenaSquare : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    /*private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.GetComponent<Player>()!=null&&squareState!=SquareState.breaking)
         {
             squareState=SquareState.onSquare;
             StopAllCoroutines();
         }
+    }*/
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.GetComponent<Player>() != null && squareState != SquareState.breaking && squareState != SquareState.broken)
+        {
+            squareState = SquareState.onSquare;
+            StopAllCoroutines();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.GetComponent<Player>() != null&&squareState!=SquareState.breaking)
+        if (collision.gameObject.GetComponent<Player>() != null&&squareState!=SquareState.breaking&&squareState!=SquareState.broken)
         {
             squareState = SquareState.offSquare;
             StopAllCoroutines();
@@ -149,6 +158,60 @@ public class ArenaSquare : MonoBehaviour
         spriteRenderer.color = Color.gray;
         yield return new WaitForSeconds(breakPeriod);
         spriteRenderer.color = Color.black;
-        this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        squareState = SquareState.broken;
+    }
+
+    public void ChangeDifficulty()
+    {
+        switch (Menu.difficulty)
+        {
+            case Menu.Difficulty.easy:
+                SetEasy();
+                break;
+            case Menu.Difficulty.medium:
+                SetMedium();
+                break;
+            case Menu.Difficulty.hard:
+                SetHard();
+                break;
+        }
+        durability = maxDurability;
+    }
+
+    public void SetEasy()
+    {
+        maxDurability = 5;
+        regeneratePeriod = 1;
+        regenerateRate = 0.25f;
+        breakPeriod = 1.5f;
+    }
+
+    public void SetMedium()
+    {
+        maxDurability = 3;
+        regeneratePeriod = 1;
+        regenerateRate = 0.2f;
+        breakPeriod = 1;
+    }
+
+    public void SetHard()
+    {
+        maxDurability = 2;
+        regeneratePeriod = 1.5f;
+        regenerateRate = 0.2f;
+        breakPeriod = 0.5f;
+    }
+
+    public void ResetDurability()
+    {
+        durability = maxDurability;
+        squareState = SquareState.offSquare;
+        spriteRenderer.color = Color.green;
+        hasBroken = false;
+    }
+
+    public SquareState GetSquareState()
+    {
+        return squareState;
     }
 }

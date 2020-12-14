@@ -11,6 +11,7 @@ public class Wall : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Time.timeScale = 0;
         if(gameObject.GetComponent<Rigidbody2D>()==null)
         {
             rb2D=gameObject.AddComponent<Rigidbody2D>();
@@ -22,19 +23,11 @@ public class Wall : MonoBehaviour
     void Update()
     {
         rb2D.MovePosition(rb2D.position + Direction * Speed * Time.fixedDeltaTime);
+        //Once wall leaves screen, destroy it
         if(transform.position.x<Util.GetBottomLeft().x||transform.position.x>Util.GetTopRight().x||transform.position.y<Util.GetBottomLeft().y||transform.position.y>Util.GetTopRight().y)
         {
             WallManager.RemoveWall(this);
             Destroy(this.gameObject);
         }
     }
-
-    /*private void OnTriggerExit2D(Collider2D collision)
-    {
-        if(collision.gameObject.tag=="ArenaTag")
-        {
-            WallManager.RemoveWall(this);
-            Destroy(this.gameObject);
-        }
-    }*/
 }

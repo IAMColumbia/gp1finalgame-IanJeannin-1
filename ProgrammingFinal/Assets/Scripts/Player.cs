@@ -12,6 +12,8 @@ public class Player : MonoBehaviour
     private float maxSpeed=8;
     [SerializeField]
     private float speedMultiplier=0.1f;
+    [SerializeField]
+    private Menu menu;
 
     private float speed;
     private Vector3 moveTranslation;
@@ -45,28 +47,31 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (speed>maxSpeed)
+        if (Menu.gameState == Menu.GameState.play)
         {
-            speed = maxSpeed;
-        }
-        CheckInArena();
-        if(isInArena)
-        {
-            spriteRenderer.color = Color.blue;
-            
-        }
-        else
-        {
-            spriteRenderer.color = Color.red;
-            Reset();
-        }
-        if (playerController.IsKeyDown)
-        {
-            this.Direction = playerController.direction;
-        }
-        else
-        {
-            this.Direction = Vector3.zero;
+            if (speed > maxSpeed)
+            {
+                speed = maxSpeed;
+            }
+            CheckInArena();
+            if (isInArena)
+            {
+                spriteRenderer.color = Color.blue;
+
+            }
+            else
+            {
+                spriteRenderer.color = Color.red;
+                Reset();
+            }
+            if (playerController.IsKeyDown)
+            {
+                this.Direction = playerController.direction;
+            }
+            else
+            {
+                this.Direction = Vector3.zero;
+            }
         }
     }
 
@@ -111,7 +116,10 @@ public class Player : MonoBehaviour
             {
                 if (storedObject.GetComponent<ArenaSquare>() != null)
                 {
-                    tempInArena = true;
+                    if(storedObject.GetComponent<ArenaSquare>().GetSquareState()!=ArenaSquare.SquareState.broken)
+                    {
+                        tempInArena = true;
+                    }
                 }
             }
         }
@@ -140,7 +148,9 @@ public class Player : MonoBehaviour
         transform.position = new Vector2(0, 0);
         speed = startingSpeed;
         ScoreManager.Score = 0;
-        wallManager.ResetWalls();
         arena.GetComponent<Arena>().ResetArena();
+        menu.GameOver();
+        wallManager.ResetWalls();
+        Time.timeScale = 0;
     }
 }
