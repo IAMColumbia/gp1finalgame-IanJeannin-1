@@ -12,6 +12,7 @@ public class Arena : MonoBehaviour
     Vector2 topRight;
     private GameObject[,] arenaSquares=new GameObject[4,4];
 
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -50,12 +51,14 @@ public class Arena : MonoBehaviour
 
     public void ChangeDifficulty()
     {
-        foreach(GameObject square in arenaSquares)
+        foreach (GameObject square in arenaSquares)
         {
-            if(square.GetComponent<ArenaSquare>()!=null)
+            if (square.GetComponent<ArenaSquare>() != null)
             {
-                square.GetComponent<ArenaSquare>().ChangeDifficulty();
+                square.GetComponent<ArenaSquare>().ResetDurability();
             }
         }
+        ArenaSquareSettings.ChangeDifficulty();
     }
+
 }
